@@ -1,10 +1,13 @@
 
 # PyOTA "Hello world" tutorial.
 
-The goal of this tutorial is to create new empty wallet based on new random seed and to transfer IOTA tokens to it from wallet generated via the faucet.
+The goal of this tutorial is to create a new, empty wallet based on a new random seed and to transfer IOTA tokens to it from a wallet generated via the faucet. In this tutorial the following tools are used:
+
+* Jupyter notebooks - version XX.XX
+* more?
 
 ## Imports
-Currently, we have following imports:
+Currently, we have the following imports:
  * iota - module name for [PyOTA](https://pyota.readthedocs.io/en/latest/)
  * secrets - "The [secrets](https://docs.python.org/3/library/secrets.html#module-secrets) module is used for generating cryptographically strong random numbers suitable for managing data such as passwords, account authentication, security tokens, and related secrets."
  * requests - "[Requests](http://docs.python-requests.org/en/master/) is an elegant and simple HTTP library for Python, built for human beings."
@@ -16,19 +19,19 @@ import secrets
 import requests
 ```
 
-## Connecting to testnet
-Since we would like to be as close to actual Main IOTA network we will use IOTA testnet. IOTA testnet is supposed to be almost identical in operating as mainnet but has faster confirmation times and is reset regularly, so tokens used there have no value. Here is a list of example testnet nodes:
+## Connecting to the testnet
+Since we would like to be as close to the actual Main IOTA network as possible, we will use the IOTA testnet. The IOTA testnet is almost identical to the mainnet but has faster confirmation times and is reset regularly, so tokens used there have no value. Here is a list of example testnet nodes:
 
 * http://p103.iotaledger.net:14700
 * https://testnet140.tangle.works:443
 * http://p101.iotaledger.net:14700
 
-Please note that they could be down or unresponsive. 
+Please note that the nodes are down or unresponsive at times. 
 
 ## Configuration
-To execute code in this tutorial we need to setup few parameters at the beginning:
+To execute the code in this tutorial we need to define a few parameters at the beginning:
  * depth: int - Depth at which to attach the bundle. From docs: "The input value is depth, which basically determines how many bundles to go back to for finding the transactions to approve. The higher your depth value, the more "babysitting" you do for the network (as you have to confirm more transactions)."
- * uri: string - address of a testnet node in a format as in the example above.
+ * uri: string - address of a testnet node in the same format as in the example above.
 
 
 ```python
@@ -36,11 +39,11 @@ depth = 3
 uri = 'https://testnet140.tangle.works:443'
 ```
 
-# Generating part
-This part is dedicated to generating receiver and sender seeds and addresses. If you run this code from top to bottom, new pairs will be generated every time. This might be not intended behavior. If you like to use constant values while experimenting, re-run your code from **Using part**.
+# Generating seeds and addresses
+This part is dedicated to generating receiver and sender seeds and addresses. If you run this code from top to bottom, new pairs will be generated every time. This might not be the intended behavior. If you would like to use constant values while experimenting, re-run your code from the [**Usage** section](ref-usage). 
 
-## Generating and printing receiver seed
-We can easily and securely generate seed which will be used as a seed for receiver side.
+## Generating and printing a receiver seed
+We can easily and securely generate seeds which will be used by the receiver side.
 
 
 ```python
@@ -84,7 +87,7 @@ api.get_node_info()
 
 
 ## Prepare receiver address
-We already have seed for a receiver (in variable **receiver_seed**), now we would like to have his address. Let's generate one:
+We already have our seed for the receiver (in the variable **receiver_seed**), now we would like to have the address. Let's generate one:
 
 
 ```python
@@ -98,7 +101,7 @@ print("Receiver address 0 is: " + str(receiver_address))
 
 
 ## Prepare sender - how to get testnet tokens?
-If we are generating new wallets from new seeds then those wallets will be empty (well, [probably](https://matthewwinstonjohnson.gitbooks.io/iota-guide-and-faq/how-secure-is-my-seed.html)). Since we would like to simulate the transfer of "value" between two parties, we would need to have some tokens in at least one wallet in our setup. Thanks to IOTA devs, there is service called faucet which is generating seeds and wallet addresses with some testnet tokens in it (2K at the moment). They also provide JSON API so we can use it right away.
+If we are generating new wallets from new seeds then those wallets will be empty (well, [probably](https://matthewwinstonjohnson.gitbooks.io/iota-guide-and-faq/how-secure-is-my-seed.html)). Since we would like to simulate the transfer of "value" between two parties, we would need to have some tokens in at least one wallet in our setup. Thanks to IOTA devs, there is a service called a faucet which is generating seeds and wallet addresses with some testnet tokens in it (2K at the moment). They also provide a JSON API so we can use it programmatically.
 
 
 ```python
@@ -128,7 +131,8 @@ print("Sender amount: " + str(sender_wallet["amount"]))
     Sender amount: 2000
 
 
-# Using part
+# Usage
+(#ref-usage)
 To this moment we should have seeds and addresses for the sender (with tokens) and receiver. They are in:
 * sender_seed
 * sender_address
@@ -173,8 +177,7 @@ receiver_account["balance"]
 
 ## Prepare transaction
 
-Let's switch back to sender seed and prepare message. Such message is built from string and will be attached to the transaction, so the receiver will be able to easily see it.
-
+Let's switch back to the sender seed and prepare message. Such a message is built from a string and will be attached to the transaction, so that the receiver will be able to see it easily.
 
 ```python
 api = iota.Iota(uri, seed=sender_seed)
@@ -185,7 +188,7 @@ api = iota.Iota(uri, seed=sender_seed)
 message = ("Here, have all my testnet tokens!")
 ```
 
-Proposed transaction must consist receiver **address**, **value** we would like to send and **message** which will be added to transfer.
+The proposed transaction must consist of: receiver **address** and the **value** we would like to send and the **message** which will be added to the transfer.
 
 
 ```python
@@ -222,7 +225,7 @@ proposedTransaction
 
 
 
-# Execute transfer
+# Execute transaction
 
 
 ```python
@@ -342,7 +345,7 @@ for transaction in transfer["bundle"]:
     NameError: name 'transfer' is not defined
 
 
-Let's check statuses of our transactions. We need hashes of them to be able to check if they were executed.
+Let's check the statuses of our transactions. We need the corresponding hashes to be able to check if they were executed.
 
 
 ```python
@@ -393,9 +396,9 @@ api.get_latest_inclusion(transactionHash)
     ValueError: Request failed validation ({'hashes': ['empty']}) (`exc.context["filter_errors"]` contains more information).
 
 
-If the status is "True", it means that transaction was executed and we could see that tokens appeared on the receiver side.
+If the status is "True", it means that the transaction was executed and we could see that the tokens appeared on the receiver side.
 But if we have only "False" that means that our proposed transaction wasn't validated and included in the tangle.
-In this case, we could wait or replay our request.
+In this case, we could either wait or replay our request.
 
 
 ```python
@@ -414,7 +417,7 @@ api.replay_bundle(transactionHash[0], depth=depth) # should work on working and 
     IndexError: list index out of range
 
 
-After successful inclusion, we should be able to see transferred tokens in receiver wallet:
+After successful inclusion, we should be able to see the transferred tokens in the receiver wallet:
 
 
 ```python
@@ -455,7 +458,7 @@ assert requests.__version__ == '2.18.4'
 ## Future enchancements:
 
 ### Check if address was used to spent: https://github.com/iotaledger/iota.lib.py/pull/158
-Not pushed to relese yet.
+Not pushed to release yet.
 
 ```
 api = Iota(uri, seed=sender_seed)
