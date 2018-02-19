@@ -2,9 +2,10 @@
 # PyOTA "Hello world" tutorial.
 
 The goal of this tutorial is to create a new, empty wallet based on a new random seed and to transfer IOTA tokens to it from a wallet generated via the faucet. In this tutorial the following tools are used:
-
-* Jupyter notebooks - version XX.XX
-* more?
+ * Python 3.6.4 - probably any Python 3 will work
+ * Jupyter Notebooks 5.4.0 - needed only for ipynb version of script
+ * iota 2.0.4 - PyOTA module
+ * requests 2.18.4 - module for handling faucet API
 
 ## Imports
 Currently, we have the following imports:
@@ -19,6 +20,16 @@ import secrets
 import requests
 ```
 
+## Versions of modules used in tutorial:
+
+
+```python
+assert iota.__version__ == '2.0.4'
+assert requests.__version__ == '2.18.4'
+```
+
+If above assertions will fail, remove them or adjust. They are just for module version checks.
+
 ## Connecting to the testnet
 Since we would like to be as close to the actual Main IOTA network as possible, we will use the IOTA testnet. The IOTA testnet is almost identical to the mainnet but has faster confirmation times and is reset regularly, so tokens used there have no value. Here is a list of example testnet nodes:
 
@@ -26,7 +37,7 @@ Since we would like to be as close to the actual Main IOTA network as possible, 
 * https://testnet140.tangle.works:443
 * http://p101.iotaledger.net:14700
 
-Please note that the nodes are down or unresponsive at times. 
+Please note that the nodes are down or unresponsive at times.
 
 ## Configuration
 To execute the code in this tutorial we need to define a few parameters at the beginning:
@@ -40,7 +51,7 @@ uri = 'https://testnet140.tangle.works:443'
 ```
 
 # Generating seeds and addresses
-This part is dedicated to generating receiver and sender seeds and addresses. If you run this code from top to bottom, new pairs will be generated every time. This might not be the intended behavior. If you would like to use constant values while experimenting, re-run your code from the [**Usage** section](ref-usage). 
+This part is dedicated to generating receiver and sender seeds and addresses. If you run this code from top to bottom, new pairs will be generated every time. This might not be the intended behavior. If you would like to use constant values while experimenting, re-run your code from the [**Usage** section](#Usage).
 
 ## Generating and printing a receiver seed
 We can easily and securely generate seeds which will be used by the receiver side.
@@ -54,7 +65,7 @@ for i in range(81): receiver_seed += secrets.choice(chars)
 print(receiver_seed)
 ```
 
-    MIMBUGANSGDVOTJT9VUQLSSVSWURGWDDQWFBQURKNKBFOYCLKQTNLEOFIVLRTWYJLEPUTPBUAGOPZLQWK
+    PEMETCMEKOYDHZMNFATHGIXDGJQMOKSRMNWICMYDG9DBXI9XJXZQO9QMSTONMUHJHLTDBNASJNMKTVN9S
 
 
 
@@ -70,19 +81,19 @@ api.get_node_info()
      'appVersion': '1.4.2.1',
      'duration': 0,
      'jreAvailableProcessors': 8,
-     'jreFreeMemory': 417420784,
+     'jreFreeMemory': 258859936,
      'jreMaxMemory': 15271460864,
-     'jreTotalMemory': 1837105152,
+     'jreTotalMemory': 1218445312,
      'jreVersion': '1.8.0_161',
-     'latestMilestone': TransactionHash(b'KBCCRBR99DBMPBQEIJC9NHDRJASYUYJXXUGKZK9ZYKYVTJXAFCTYIWSATZSUGIMXHL9BQG9FVNNDGI999'),
-     'latestMilestoneIndex': 636075,
-     'latestSolidSubtangleMilestone': TransactionHash(b'KBCCRBR99DBMPBQEIJC9NHDRJASYUYJXXUGKZK9ZYKYVTJXAFCTYIWSATZSUGIMXHL9BQG9FVNNDGI999'),
-     'latestSolidSubtangleMilestoneIndex': 636075,
+     'latestMilestone': TransactionHash(b'GPYX9MGLTYHNKHOTATTVUQEEKKSUEJYOVK9LUENWMCENNNZLPYGHIKVHROVINCZDYRZYDSHAUBBVYZ999'),
+     'latestMilestoneIndex': 317631,
+     'latestSolidSubtangleMilestone': TransactionHash(b'GPYX9MGLTYHNKHOTATTVUQEEKKSUEJYOVK9LUENWMCENNNZLPYGHIKVHROVINCZDYRZYDSHAUBBVYZ999'),
+     'latestSolidSubtangleMilestoneIndex': 317631,
      'neighbors': 1,
      'packetsQueueSize': 0,
-     'time': 1519030987440,
-     'tips': 13,
-     'transactionsToRequest': 6}
+     'time': 1519044999136,
+     'tips': 10,
+     'transactionsToRequest': 0}
 
 
 
@@ -97,7 +108,7 @@ receiver_address = addresses[0]
 print("Receiver address 0 is: " + str(receiver_address))
 ```
 
-    Receiver address 0 is: CF9B9UNZIMAZCBOZBZGNZOMRLEJHA9RKQSHMPHCDWABDLC9NALTDXNMBRS9HHHPLINXMPZZFVQZDVBZDY
+    Receiver address 0 is: EJQE9USJIZSGHLNCRSJFVKNAVNOVHLSVHLQOXIHWEBUJKHLC9BNYLLWCQOIHOADFXJKRKXPTGXBGQ9NYZ
 
 
 ## Prepare sender - how to get testnet tokens?
@@ -126,13 +137,13 @@ print("Sender address: " + sender_address)
 print("Sender amount: " + str(sender_wallet["amount"]))
 ```
 
-    Sender seed: ZPZRORKAGKBLUVEPEYVZDMSSDSLHJEEPITFKACDAFDEKLGPHSHEUFPFCNROXPTTUSBHXBRXWIUXVDLOVB
-    Sender address: LEKGKGXDAAMMWKWQ9JTSAXFTOIUSWBKTWFVKSXTAODGBDPDGIIRAFKYVQGWRGCNURAUWOCGRBWPCDFDJC
+    Sender seed: QVSFINNL9PSUDVXOVUTQZFIZDNZOWRUASOBASSEJPJDGSIGAXVONJYYPQIZYRFDLANKBKYRZLSYPFWFPD
+    Sender address: CENSNVDK9BUHDAOEBMUDKXLPBQ9YCTPQKWPFMYAYVVLOFOCCCLMYVNSLKUDCEHWXOUMPLFA9DFDFAIFGD
     Sender amount: 2000
 
 
-# Usage
-(#ref-usage)
+# <a name="usage">Usage</a>
+
 To this moment we should have seeds and addresses for the sender (with tokens) and receiver. They are in:
 * sender_seed
 * sender_address
@@ -179,6 +190,7 @@ receiver_account["balance"]
 
 Let's switch back to the sender seed and prepare message. Such a message is built from a string and will be attached to the transaction, so that the receiver will be able to see it easily.
 
+
 ```python
 api = iota.Iota(uri, seed=sender_seed)
 ```
@@ -206,7 +218,7 @@ proposedTransaction
 
 
 
-    ProposedTransaction(**{'address': Address(b'CF9B9UNZIMAZCBOZBZGNZOMRLEJHA9RKQSHMPHCDWABDLC9NALTDXNMBRS9HHHPLINXMPZZFVQZDVBZDY'),
+    ProposedTransaction(**{'address': Address(b'EJQE9USJIZSGHLNCRSJFVKNAVNOVHLSVHLQOXIHWEBUJKHLC9BNYLLWCQOIHOADFXJKRKXPTGXBGQ9NYZ'),
                          'attachment_timestamp': 0,
                          'attachment_timestamp_lower_bound': 0,
                          'attachment_timestamp_upper_bound': 0,
@@ -219,7 +231,7 @@ proposedTransaction
                          'nonce': Nonce(b'999999999999999999999999999'),
                          'signature_message_fragment': None,
                          'tag': Tag(b'999999999999999999999999999'),
-                         'timestamp': 1519030996,
+                         'timestamp': 1519045008,
                          'trunk_transaction_hash': TransactionHash(b'999999999999999999999999999999999999999999999999999999999999999999999999999999999'),
                          'value': 0})
 
@@ -240,7 +252,7 @@ transfer = api.send_transfer(transfers = [proposedTransaction],
 
     BadApiResponse                            Traceback (most recent call last)
 
-    <ipython-input-15-bf31d7dbe23f> in <module>()
+    <ipython-input-16-bf31d7dbe23f> in <module>()
           1 transfer = api.send_transfer(transfers = [proposedTransaction], 
           2                   depth = depth,
     ----> 3                   inputs = [iota.Address(sender_address, key_index=0, security_level=2)]
@@ -335,7 +347,7 @@ for transaction in transfer["bundle"]:
 
     NameError                                 Traceback (most recent call last)
 
-    <ipython-input-16-643384cfcf5b> in <module>()
+    <ipython-input-17-643384cfcf5b> in <module>()
           1 transactionHash = []
     ----> 2 for transaction in transfer["bundle"]:
           3     transactionHash.append(transaction.hash)
@@ -357,7 +369,7 @@ api.get_latest_inclusion(transactionHash)
 
     ValueError                                Traceback (most recent call last)
 
-    <ipython-input-17-7953d398015b> in <module>()
+    <ipython-input-18-7953d398015b> in <module>()
     ----> 1 api.get_latest_inclusion(transactionHash)
     
 
@@ -410,7 +422,7 @@ api.replay_bundle(transactionHash[0], depth=depth) # should work on working and 
 
     IndexError                                Traceback (most recent call last)
 
-    <ipython-input-18-910ceebc4a48> in <module>()
+    <ipython-input-19-910ceebc4a48> in <module>()
     ----> 1 api.replay_bundle(transactionHash[0], depth=depth) # should work on working and synced node
     
 
@@ -446,14 +458,6 @@ receiver_account["balance"]
     0
 
 
-
-## Versions of modules used in tutorial:
-
-
-```python
-assert iota.__version__ == '2.0.4'
-assert requests.__version__ == '2.18.4'
-```
 
 ## Future enchancements:
 
